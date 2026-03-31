@@ -1,0 +1,21 @@
+timeout: 30
+workers: 5
+log_file: "debug.log"
+
+targets:
+  - name: "Claude 3.5 Haiku (Production)"
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: "claude-3-5-haiku-20241022"
+
+  - name: "Claude 3.5 Sonnet (Production)"
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: "claude-3-5-sonnet-20241022"
+
+  - name: "Claude 4.5 Haiku (Production)"
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: "claude-haiku-4-5-20251001"
+
+  - name: "Claude 3.5 Sonnet (via Proxy)"
+    base_url: "https://proxy.example.com"
+    api_key: "${PROXY_API_KEY}"
+    model: "claude-3-5-sonnet-20241022"

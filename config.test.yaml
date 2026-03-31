@@ -1,0 +1,12 @@
+timeout: 30
+workers: 2
+log_file: "debug.log"
+
+targets:
+  - name: "Test Target 1"
+    api_key: "test-key-1"
+    model: "claude-3-5-haiku-20241022"
+
+  - name: "Test Target 2"
+    api_key: "test-key-2"
+    model: "claude-3-5-sonnet-20241022"
