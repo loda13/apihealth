@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 	"syscall"
 )
 
@@ -60,32 +61,55 @@ func (e *CheckError) Unwrap() error {
 // ClassifyError categorizes errors for better diagnostics
 func ClassifyError(err error, statusCode int) *CheckError {
 	// Handle HTTP status code errors first
-	if err == nil && (statusCode == 401 || statusCode == 403) {
+	if statusCode == 401 || statusCode == 403 {
+		underlying := err
+		if underlying == nil {
+			underlying = fmt.Errorf("HTTP %d", statusCode)
+		}
 		return &CheckError{
 			Type:    ErrorTypeAuth,
 			Message: "Authentication failed",
-			Err:     fmt.Errorf("status code %d", statusCode),
+			Err:     underlying,
 		}
 	}
 
 	if statusCode == 429 {
+		underlying := err
+		if underlying == nil {
+			underlying = fmt.Errorf("HTTP %d", statusCode)
+		}
 		return &CheckError{
 			Type:    ErrorTypeRateLimit,
 			Message: "Rate limit exceeded",
-			Err:     fmt.Errorf("status code %d", statusCode),
+			Err:     underlying,
 		}
 	}
 
 	if statusCode >= 500 {
+		underlying := err
+		if underlying == nil {
+			underlying = fmt.Errorf("HTTP %d", statusCode)
+		}
 		return &CheckError{
 			Type:    ErrorTypeServer,
-			Message: "Server error",
-			Err:     fmt.Errorf("status code %d", statusCode),
+			Message: fmt.Sprintf("Server error (HTTP %d)", statusCode),
+			Err:     underlying,
 		}
 	}
 
 	if err == nil {
 		return nil
+	}
+
+	errStr := err.Error()
+
+	// Retry exhaustion (from retryablehttp)
+	if strings.Contains(errStr, "giving up after") {
+		return &CheckError{
+			Type:    ErrorTypeConnection,
+			Message: "Connection failed after retries",
+			Err:     err,
+		}
 	}
 
 	// Timeout errors
@@ -130,7 +154,7 @@ func ClassifyError(err error, statusCode int) *CheckError {
 
 	return &CheckError{
 		Type:    ErrorTypeUnknown,
-		Message: "Unknown error",
+		Message: "Request failed",
 		Err:     err,
 	}
 }

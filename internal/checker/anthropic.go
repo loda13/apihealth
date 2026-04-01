@@ -190,7 +190,19 @@ func (a *AnthropicChecker) CheckTarget(ctx context.Context, target config.Target
 		return result
 	}
 
+	// Build error message from API response
+	var errMsg string
+	if apiErr.Error.Type != "" && apiErr.Error.Message != "" {
+		errMsg = fmt.Sprintf("%s: %s", apiErr.Error.Type, apiErr.Error.Message)
+	} else if apiErr.Error.Message != "" {
+		errMsg = apiErr.Error.Message
+	} else if apiErr.Error.Type != "" {
+		errMsg = apiErr.Error.Type
+	} else {
+		errMsg = fmt.Sprintf("HTTP %d error", resp.StatusCode)
+	}
+
 	result.Success = false
-	result.Error = ClassifyError(fmt.Errorf("%s: %s", apiErr.Error.Type, apiErr.Error.Message), resp.StatusCode)
+	result.Error = ClassifyError(fmt.Errorf("%s", errMsg), resp.StatusCode)
 	return result
 }
