@@ -46,11 +46,7 @@ func RenderTable(results []checker.Result) {
 			}
 
 			if r.Error != nil {
-				if r.Error.Err != nil {
-					errorMsg = truncate(r.Error.Err.Error(), 70)
-				} else {
-					errorMsg = truncate(r.Error.Message, 70)
-				}
+				errorMsg = truncate(r.Error.Error(), 80)
 			} else {
 				errorMsg = "Unknown error"
 			}

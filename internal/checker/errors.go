@@ -103,17 +103,23 @@ func ClassifyError(err error, statusCode int) *CheckError {
 
 	errStr := err.Error()
 
-	// Retry exhaustion (from retryablehttp)
+	// Check for retry exhaustion and extract underlying error message
+	var underlyingMsg string
+	isRetryExhaustion := false
 	if strings.Contains(errStr, "giving up after") {
-		return &CheckError{
-			Type:    ErrorTypeConnection,
-			Message: "Connection failed after retries",
-			Err:     err,
+		// Parse: "POST https://... giving up after N attempt(s): <underlying>"
+		if idx := strings.LastIndex(errStr, ": "); idx != -1 {
+			underlyingMsg = errStr[idx+2:]
+			if underlyingMsg != "" && underlyingMsg != "<nil>" {
+				isRetryExhaustion = true
+			}
 		}
 	}
 
-	// Timeout errors
-	if os.IsTimeout(err) || errors.Is(err, context.DeadlineExceeded) {
+	// Timeout errors (check both original error and underlying message)
+	if os.IsTimeout(err) || errors.Is(err, context.DeadlineExceeded) ||
+		(isRetryExhaustion && (strings.Contains(underlyingMsg, "timeout") ||
+			strings.Contains(underlyingMsg, "deadline exceeded"))) {
 		return &CheckError{
 			Type:    ErrorTypeTimeout,
 			Message: "Request timeout",
@@ -123,7 +129,10 @@ func ClassifyError(err error, statusCode int) *CheckError {
 
 	// DNS errors
 	var dnsErr *net.DNSError
-	if errors.As(err, &dnsErr) {
+	if errors.As(err, &dnsErr) ||
+		(isRetryExhaustion && (strings.Contains(underlyingMsg, "no such host") ||
+			strings.Contains(underlyingMsg, "dns") ||
+			strings.Contains(underlyingMsg, "name resolution"))) {
 		return &CheckError{
 			Type:    ErrorTypeDNS,
 			Message: "DNS resolution failed",
@@ -144,10 +153,24 @@ func ClassifyError(err error, statusCode int) *CheckError {
 	}
 
 	// Connection refused
-	if errors.Is(err, syscall.ECONNREFUSED) {
+	if errors.Is(err, syscall.ECONNREFUSED) ||
+		(isRetryExhaustion && strings.Contains(underlyingMsg, "connection refused")) {
+		message := "Connection refused"
+		if isRetryExhaustion {
+			message = "Connection failed after retries"
+		}
 		return &CheckError{
 			Type:    ErrorTypeConnection,
-			Message: "Connection refused",
+			Message: message,
+			Err:     err,
+		}
+	}
+
+	// Retry exhaustion with unclassified underlying error
+	if strings.Contains(err.Error(), "giving up after") {
+		return &CheckError{
+			Type:    ErrorTypeConnection,
+			Message: "Connection failed after retries",
 			Err:     err,
 		}
 	}

@@ -14,10 +14,7 @@ import (
 	"github.com/lodatang/apihealth/internal/config"
 )
 
-const (
-	anthropicVersion = "2023-06-01"
-	defaultTimeout   = 30 * time.Second
-)
+const anthropicVersion = "2023-06-01"
 
 type AnthropicChecker struct {
 	client      *retryablehttp.Client
@@ -145,7 +142,12 @@ func (a *AnthropicChecker) CheckTarget(ctx context.Context, target config.Target
 
 	if err != nil {
 		result.Success = false
-		result.Error = ClassifyError(err, 0)
+		statusCode := 0
+		if resp != nil {
+			statusCode = resp.StatusCode
+			result.StatusCode = statusCode
+		}
+		result.Error = ClassifyError(err, statusCode)
 		return result
 	}
 	defer resp.Body.Close()
