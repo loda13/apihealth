@@ -1,0 +1,155 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776612853203,
+  "projectRoot": "/Users/lodatang/Go/apihealth",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Go",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "go.mod"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "go",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "cmd": {
+      "path": "cmd",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776612853180,
+      "keyFiles": []
+    },
+    "configs": {
+      "path": "configs",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1776612853187,
+      "keyFiles": [
+        "config.example.yaml"
+      ]
+    },
+    "internal": {
+      "path": "internal",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776612853188,
+      "keyFiles": []
+    },
+    "internal/config": {
+      "path": "internal/config",
+      "purpose": "Configuration files",
+      "fileCount": 1,
+      "lastAccessed": 1776612853188,
+      "keyFiles": [
+        "config.go"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "internal/checker/errors.go",
+      "accessCount": 12,
+      "lastAccessed": 1776614723497,
+      "type": "file"
+    },
+    {
+      "path": "internal/checker/anthropic.go",
+      "accessCount": 9,
+      "lastAccessed": 1776653943921,
+      "type": "file"
+    },
+    {
+      "path": "internal/reporter/table.go",
+      "accessCount": 8,
+      "lastAccessed": 1776654018846,
+      "type": "file"
+    },
+    {
+      "path": "internal/config/config.go",
+      "accessCount": 5,
+      "lastAccessed": 1776653890095,
+      "type": "file"
+    },
+    {
+      "path": "internal/checker/checker.go",
+      "accessCount": 5,
+      "lastAccessed": 1776653914010,
+      "type": "file"
+    },
+    {
+      "path": "cmd/apihealth/main.go",
+      "accessCount": 4,
+      "lastAccessed": 1776653988025,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 3,
+      "lastAccessed": 1776653132585,
+      "type": "directory"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 1,
+      "lastAccessed": 1776612916085,
+      "type": "file"
+    },
+    {
+      "path": "test_error_display.go",
+      "accessCount": 1,
+      "lastAccessed": 1776613946816,
+      "type": "file"
+    },
+    {
+      "path": "go.mod",
+      "accessCount": 1,
+      "lastAccessed": 1776614167998,
+      "type": "file"
+    },
+    {
+      "path": "internal/checker/errors_test.go",
+      "accessCount": 1,
+      "lastAccessed": 1776614372753,
+      "type": "file"
+    },
+    {
+      "path": "test_error_fix.go",
+      "accessCount": 1,
+      "lastAccessed": 1776614466349,
+      "type": "file"
+    },
+    {
+      "path": "internal/reporter/logger.go",
+      "accessCount": 1,
+      "lastAccessed": 1776652566063,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

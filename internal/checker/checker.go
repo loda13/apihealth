@@ -10,12 +10,14 @@ import (
 
 // Result represents the outcome of a health check
 type Result struct {
-	Name       string
-	Model      string
-	Success    bool
-	StatusCode int
-	Duration   time.Duration
-	Error      *CheckError
+	Name         string
+	Model        string
+	Success      bool
+	StatusCode   int
+	Duration     time.Duration
+	Error        *CheckError
+	APIErrorType string
+	APIErrorMsg  string
 }
 
 // Checker performs concurrent health checks
@@ -25,9 +27,9 @@ type Checker struct {
 }
 
 // NewChecker creates a new checker with the specified configuration
-func NewChecker(timeout time.Duration, workers int, maxRetries int) *Checker {
+func NewChecker(timeout time.Duration, workers, maxRetries, maxTokens int, message string) *Checker {
 	return &Checker{
-		anthropic: NewAnthropicChecker(timeout, maxRetries),
+		anthropic: NewAnthropicChecker(timeout, maxRetries, maxTokens, message),
 		workers:   workers,
 	}
 }

@@ -45,7 +45,9 @@ func RenderTable(results []checker.Result) {
 				status = red("✗")
 			}
 
-			if r.Error != nil {
+			if r.APIErrorType != "" || r.APIErrorMsg != "" {
+				errorMsg = truncate(fmt.Sprintf("%s: %s", r.APIErrorType, r.APIErrorMsg), 120)
+			} else if r.Error != nil {
 				errorMsg = truncate(r.Error.Error(), 80)
 			} else {
 				errorMsg = "Unknown error"

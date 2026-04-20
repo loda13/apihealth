@@ -10,10 +10,13 @@ import (
 )
 
 type Config struct {
-	Targets []Target `mapstructure:"targets"`
-	Timeout int      `mapstructure:"timeout"` // seconds
-	Workers int      `mapstructure:"workers"` // concurrent workers
-	LogFile string   `mapstructure:"log_file"`
+	Targets    []Target `mapstructure:"targets"`
+	Timeout    int      `mapstructure:"timeout"`     // seconds
+	Workers    int      `mapstructure:"workers"`     // concurrent workers
+	LogFile    string   `mapstructure:"log_file"`
+	MaxRetries int      `mapstructure:"max_retries"` // retry attempts
+	MaxTokens  int      `mapstructure:"max_tokens"`  // tokens per request
+	Message    string   `mapstructure:"message"`     // test message content
 }
 
 type Target struct {
@@ -29,9 +32,12 @@ func Load(configPath string) (*Config, error) {
 	_ = godotenv.Load()
 
 	// Set defaults
-	viper.SetDefault("timeout", 30)
+	viper.SetDefault("timeout", 15)
 	viper.SetDefault("workers", 5)
 	viper.SetDefault("log_file", "debug.log")
+	viper.SetDefault("max_retries", 3)
+	viper.SetDefault("max_tokens", 10)
+	viper.SetDefault("message", "Hi")
 
 	// Enable environment variable support
 	viper.SetEnvPrefix("APIHEALTH")
@@ -73,6 +79,30 @@ func Load(configPath string) (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+// GenerateDefault writes a default config.yaml to the given path
+func GenerateDefault(path string) error {
+	content := `# API Health Checker Configuration
+
+timeout: 15        # Request timeout in seconds
+workers: 5         # Number of concurrent workers
+max_retries: 3     # Maximum retry attempts
+max_tokens: 10     # Tokens to request per check
+message: "Hi"      # Test message content
+log_file: "debug.log"
+
+targets:
+  - name: "Claude 3.5 Haiku"
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: "claude-3-5-haiku-20241022"
+
+  # - name: "Claude via Proxy"
+  #   base_url: "https://proxy.example.com"
+  #   api_key: "${PROXY_API_KEY}"
+  #   model: "claude-3-5-sonnet-20241022"
+`
+	return os.WriteFile(path, []byte(content), 0644)
 }
 
 // Validate checks if the configuration is valid
