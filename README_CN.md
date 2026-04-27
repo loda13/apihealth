@@ -50,6 +50,20 @@ export ANTHROPIC_API_KEY="sk-ant-your-key-here"
 
 ## 配置
 
+### 生成默认配置
+
+创建默认的 `config.yaml` 文件：
+
+```bash
+./apihealth --init
+```
+
+重新生成配置文件（覆盖已有文件）：
+
+```bash
+./apihealth --init --force
+```
+
 ### YAML 配置
 
 创建 `config.yaml` 文件：

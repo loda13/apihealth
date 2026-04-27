@@ -50,6 +50,20 @@ export ANTHROPIC_API_KEY="sk-ant-your-key-here"
 
 ## Configuration
 
+### Generate Default Config
+
+Create a default `config.yaml` file:
+
+```bash
+./apihealth --init
+```
+
+To regenerate the config file (overwriting existing): 
+
+```bash
+./apihealth --init --force
+```
+
 ### YAML Configuration
 
 Create a `config.yaml` file:
